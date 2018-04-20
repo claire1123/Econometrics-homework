@@ -2,9 +2,11 @@
 title: "作業2"
 params:
   group: 9
-  id: [710661123]
-  name: ["林云方"]
+  id: 710661123
+  name: 林云方
 output:
+  html_document:
+    df_print: paged
   html_notebook:
     df_print: paged
 ---
@@ -128,7 +130,10 @@ ols1<-lm(model1,labordata)
 ols2<-lm(model2,labordata)
 coeftest(ols1, vcov. = vcovHC, type="HC1") -> ols1_coeftest
 coeftest(ols2, vcov. = vcovHC, type="HC1") -> ols2_coeftest
-stargazer(ols1,ols2,type ="html")
+stargazer(ols1,ols2,
+          se=list(ols1_coeftest[,"Std. Error"],
+                  ols2_coeftest[,2]),
+                  type ="text")
 ```
 ### (7)
 複迴歸模型估計下，LWAGE的係數要如何詮譯？顯不顯著？
@@ -164,7 +169,6 @@ LWAGE的係數＝0.538，表示薪資增加百分之一，每週工時增加0.53
 tsls_1_iv <- ivreg(
   WKS ~ LWAGE + ED + UNION + FEM | ED + UNION + FEM + IND,
   data=labordata)
-coeftest(tsls_1_iv, vcov. = vcovHC, type="HC1") -> tsls_1_iv_coeftest
 summary(tsls_1_iv, vcov = sandwich, diagnostics = TRUE, df=Inf) -> tsls_1_iv_tests
 ```
 
@@ -175,7 +179,6 @@ summary(tsls_1_iv, vcov = sandwich, diagnostics = TRUE, df=Inf) -> tsls_1_iv_tes
 tsls_2_iv <- ivreg(
   WKS ~ LWAGE + ED + UNION + FEM | ED + UNION + FEM + IND + SMSA,
   data=labordata)
-coeftest(tsls_2_iv, vcov. = vcovHC, type="HC1") -> tsls_2_iv_coeftest
 summary(tsls_2_iv, vcov = sandwich, diagnostics = TRUE, df=Inf) -> tsls_2_iv_tests
 ```
 
